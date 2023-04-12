@@ -1,0 +1,57 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://kit.fontawesome.com/79094805a6.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="styles.css">
+    <title>TO-DO-LIST</title>
+</head>
+
+<body>
+
+    <div class="toDo">
+        <div class="topPart">
+            <p class="sr-only task-count">
+                <%= tasks.length %>
+            </p>
+            <h1><span id="dayOfWeek">DayOfWeek, </span><span id="date">Date</span><span id="taskNum"></span></h1>
+            <h2><span id="month">Month, </span><span id="year">year</span></h2>
+            <h2><span id="clockTime">Time</span></h2>
+
+
+        </div>
+        <button class="addButton btn  btn-light">+</button>
+        <div class="form-overlay">
+            <form method="POST" action="/" class="newTask">
+                <p class="close" title="close">X</p>
+                <label for="taskDets">Task Details</label>
+                <textarea type="text" name="taskDets" placeholder="Type here..." id="addedTask"></textarea>
+
+                <label for="time">Date and Time</label>
+                <input type="datetime-local" name="time" id="time">
+                <button class="btn btn-outline-light addNew">Add</button>
+            </form>
+        </div>
+        <div class="mainListContainer">
+            <ul class="mainList">
+                <% tasks.forEach((task)=>{%>
+                    <li class='mainListItem'><i class='fa-solid fa-check'></i><span class='col-sm-5'>
+                            <%= task.task %>
+                        </span> <span class='timeToDo col-sm-5'><i class='fa-solid fa-stopwatch'></i>
+                            <%=(new Date(task.time).toUTCString()) %>
+                        </span> <span class='close' data-id=<%=task.taskId %>>X</span></li>
+                    <%}) %>
+            </ul>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="dom.js" charset="UTF-8"></script>
+</body>
+
+</html>
