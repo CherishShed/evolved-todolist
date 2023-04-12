@@ -21,7 +21,14 @@ app.get("/", (req, res) => {
         con.query(stmt, (err, result) => {
             if (err) throw err;
             tasks.push(...result);
-            res.render("index", { root: __dirname, tasks })
+            if (tasks.length === 0) {
+                var taskcount = 0
+            }
+            else {
+                var taskcount = tasks.length;
+            }
+
+            res.render("index", { root: __dirname, tasks, taskcount })
         })
     })
 })

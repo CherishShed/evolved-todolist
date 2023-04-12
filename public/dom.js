@@ -4,12 +4,9 @@ var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "S
 var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 var dateNum = String(today.getDate())
 var prefix = "";
-if ($(".task-count").text() == "NaN") {
-    var numOfTasks = 0;
-} else {
-    var numOfTasks = parseInt($(".task-count").text());
-}
+var numOfTasks = parseInt($(".task-count").text());
 var iconElement = "<i class= fa-solid fa-check></i>"
+
 function checkMeridian() {
     if (new Date(Date.now()).getHours() > 11) {
         meridian = "PM";
@@ -23,7 +20,10 @@ function changeDate() {
     $("#dayOfWeek").text(days[today.getDay()] + ", ");
     $("#dayOfWeek").fadeIn(1000);
 
-    if (dateNum.charAt(dateNum.length - 1) === "1") {
+    if (parseInt(dateNum) > 3 & parseInt(dateNum) < 21) {
+        prefix = "th";
+    }
+    else if (dateNum.charAt(dateNum.length - 1) === "1") {
         prefix = "st";
     }
     else if (dateNum.charAt(dateNum.length - 1) === "2") {
@@ -56,9 +56,6 @@ function changeDate() {
 }
 
 function taskCalc(numTasks) {
-    if ($(".task-count").text() == "NaN") {
-        numTasks = 0;
-    }
     if (numTasks === 1) {
         $("#taskNum").slideUp(10);
         $("#taskNum").slideDown(700);
@@ -82,51 +79,35 @@ $(".newTask .close").click(function () {
     $(".form-overlay").hide(500);
 })
 
-// $(".addNew").click(function () {
-//     // console.log(newTask);
-//     $(".mainList").append(newTask);
-//     storeTask(newTask);
-//     numOfTasks++;
-//     taskCalc(numOfTasks);
-//     addRemove();
-//     $(".newTask").hide(500);
+$(".addNew").click(function () {
+    // console.log(newTask);
+    addRemove();
+    $(".form-overlay").hide(500);
 
-// })
+})
 
 function addRemove() {
     $(".mainList li").click(function (ev) {
         $(this.firstChild).toggleClass("icon")
 
         $(this).toggleClass("checked");
-        // console.log("'" + ev.target);
     })
-
-    // $("li").append("<span class='close'>X</span>");
-
-
     $("li").mouseenter(function () {
         $(this.lastChild).show();
     }
     );
-
     $("li").mouseleave(function () {
         $(this.lastChild).hide();
     }
     );
-
     $("span.close").click(function (ev) {
         let happenedTo = ev.target.parentElement;
         $(this.parentElement).slideUp(500, function () {
             $(ev.parentElement).css("display", "none");
             $(happenedTo).remove();
-            storeTask();
-            numOfTasks--
-            if ($(".task-count").text() == "NaN") {
-                numOfTasks = 0;
-            }
+            numOfTasks--;
             taskCalc(numOfTasks);
         });
-
         const idToDelete = $(this).data('id');
 
         // Send a DELETE request to the server using Ajax
