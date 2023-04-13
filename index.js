@@ -12,26 +12,40 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.set("view engine", "ejs");
 
+con.connect((err) => {
+    if (err) {
+        console.error('Error connecting to MySQL: ' + err.stack);
+        return;
+    }
+    console.log('Connected to MySQL as id ' + con.threadId);
+});
+
+// Handle the error event to catch any connection errors
+con.on('error', (err) => {
+    console.error('MySQL error: ' + err.message);
+    if (err.code === 'PROTOCOL_CONNECTION_LOST') {
+        console.log('Attempting to reconnect to MySQL...');
+        con.connect();
+    }
+});
 app.get("/", (req, res) => {
     const tasks = [];
-    con.connect((err) => {
-        if (err) throw err;
-        console.log("Connected");
-        var stmt = 'select taskId, task, time from taskData';
-        con.query(stmt, (err, result) => {
-            if (err) throw err;
-            tasks.push(...result);
-            if (tasks.length === 0) {
-                var taskcount = 0
-            }
-            else {
-                var taskcount = tasks.length;
-            }
 
-            res.render("index", { root: __dirname, tasks, taskcount })
-        })
+    var stmt = 'select taskId, task, time from taskData';
+    con.query(stmt, (err, result) => {
+        if (err) throw err;
+        tasks.push(...result);
+        if (tasks.length === 0) {
+            var taskcount = 0
+        }
+        else {
+            var taskcount = tasks.length;
+        }
+
+        res.render("index", { root: __dirname, tasks, taskcount })
     })
 })
+
 app.post("/", (req, res) => {
     var taskDet = req.body.taskDets;
     var timeToDo = new Date(req.body.time).toISOString();
@@ -47,9 +61,8 @@ app.post("/", (req, res) => {
 
 app.delete("/:id", (req, res) => {
     const idToDelete = req.params.id;
-    console.log(idToDelete)
-        // Execute the DELETE query on the database
-        ;
+    // Execute the DELETE query on the database
+    ;
     con.query(`DELETE FROM taskData WHERE taskId = ${idToDelete}`, (error, results, fields) => {
         if (error) {
             console.error(error);
